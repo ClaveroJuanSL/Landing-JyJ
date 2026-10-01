@@ -1,0 +1,1428 @@
+/* ==========================================================================
+   JYJ Mantenimiento · Estilos globales
+   --------------------------------------------------------------------------
+   Orden del archivo:
+   1. Variables (colores, formas, movimiento) y modo oscuro
+   2. Base (reset, tipografía, accesibilidad)
+   3. Piezas reutilizables (contenedor, secciones, bisel, botones, marca)
+   4. Header (isla + menú móvil)
+   5. Secciones, en el orden de la página
+   6. Animaciones de entrada
+
+   Puntos de corte (los mismos en todo el archivo):
+   - hasta 767px   → celular: todo en una columna
+   - 768 a 1023px  → tablet: grillas de 2 columnas
+   - desde 1024px  → escritorio: grillas de 12 columnas
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Variables
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Paleta "Bosque": sale del logo. Verde bosque (las letras JYJ) como
+     color de base para textos y paneles, y verde hoja (las hojas) como ÚNICO
+     acento. El azul de la ola del logo no se usa en la interfaz: el agua ya
+     aparece en las fotos de las piletas. */
+  --fondo: #f3f5f0;
+  --superficie: #fbfcf9;
+  --superficie-tinte: #e8ede3;
+  --tinta: #13261a;
+  --tinta-suave: #4b5f51;
+  --linea: rgb(19 38 26 / 0.09);
+  --linea-fuerte: rgb(19 38 26 / 0.18);
+
+  --acento: #7db544;
+  --acento-tinta: #13261a; /* texto que va encima del acento */
+  --acento-suave: rgb(125 181 68 / 0.16);
+
+  --panel: #1d4a2c; /* paneles oscuros: celda "Podas" y el cierre */
+  --panel-tinta: #eef4e8;
+  --panel-tinta-suave: #b9ccb9;
+
+  --boton: #1d4a2c;
+  --boton-tinta: #f3f7ef;
+  --boton-icono: var(--acento);
+  --boton-icono-tinta: var(--acento-tinta);
+
+  --vidrio: rgb(251 252 249 / 0.72);
+
+  /* Sombras teñidas de verde, muy difusas: nunca negras ni duras. */
+  --sombra: 0 30px 80px -32px rgb(29 74 44 / 0.3);
+  --sombra-suave: 0 18px 50px -28px rgb(29 74 44 / 0.24);
+  --resalte: inset 0 1px 1px rgb(255 255 255 / 0.65);
+
+  /* Formas. Regla única para toda la página:
+     - tarjetas y fotos: radio grande (--radio), con "doble bisel"
+     - botones, etiquetas y fichas: píldora completa (999px) */
+  --radio: 2rem;
+  --bisel: 0.375rem;
+  --radio-nucleo: calc(var(--radio) - var(--bisel));
+
+  /* Movimiento. Una sola curva para todo: arranca rápido y frena suave,
+     como un objeto con peso. Nada de "linear" ni "ease-in-out". */
+  --curva: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Capas (z-index). Solo estas dos a nivel página: */
+  --z-menu: 20; /* panel del menú móvil */
+  --z-isla: 30; /* header flotante (queda por encima del menú, para la X) */
+
+  /* Tipografía (las variables las crea next/font en app/layout.js) */
+  --fuente-titulos: var(--font-bricolage), system-ui, sans-serif;
+  --fuente-texto: var(--font-geist), system-ui, sans-serif;
+
+  /* Medidas de página */
+  --ancho: 1280px;
+  --margen: 16px;
+  --espacio-seccion: clamp(5rem, 11vw, 9rem);
+
+  color-scheme: light dark;
+}
+
+/* Modo oscuro: se activa solo si el sistema de la persona está en oscuro.
+   Mismos nombres de variables, otros valores: el resto del CSS no cambia. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #0d1711;
+    --superficie: #132019;
+    --superficie-tinte: #16261c;
+    --tinta: #e8efe4;
+    --tinta-suave: #a2b4a5;
+    --linea: rgb(232 239 228 / 0.09);
+    --linea-fuerte: rgb(232 239 228 / 0.2);
+
+    --acento: #9ccf62;
+    --acento-tinta: #0d1711;
+    --acento-suave: rgb(156 207 98 / 0.14);
+
+    --panel: #1f3d2a;
+    --panel-tinta: #eef4e8;
+    --panel-tinta-suave: #b3c7b4;
+
+    --boton: #9ccf62;
+    --boton-tinta: #0d1711;
+    --boton-icono: rgb(13 23 17 / 0.14);
+    --boton-icono-tinta: #0d1711;
+
+    --vidrio: rgb(19 32 25 / 0.72);
+
+    --sombra: 0 30px 80px -32px rgb(0 0 0 / 0.6);
+    --sombra-suave: 0 18px 50px -28px rgb(0 0 0 / 0.55);
+    --resalte: inset 0 1px 1px rgb(255 255 255 / 0.06);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--fondo);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Scroll suave al tocar un link del menú, salvo que la persona pida menos
+   movimiento en su sistema. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--fuente-texto);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--acento);
+  color: var(--acento-tinta);
+}
+
+/* Anillo de foco visible al navegar con teclado (no con el mouse). */
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 3px;
+}
+
+/* Al saltar a una sección desde el menú, que el título no quede tapado por
+   el header flotante. */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+.saltar {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: calc(var(--z-isla) + 1);
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: var(--boton);
+  color: var(--boton-tinta);
+  text-decoration: none;
+  translate: 0 -200%;
+}
+
+.saltar:focus {
+  translate: 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Piezas reutilizables
+   -------------------------------------------------------------------------- */
+
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho);
+  margin-inline: auto;
+  padding-inline: var(--margen);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --margen: 32px;
+  }
+}
+
+.seccion {
+  padding-block: var(--espacio-seccion);
+}
+
+/* Variante con un tono apenas más profundo: mismo modo (claro u oscuro),
+   solo cambia la intensidad del fondo. */
+.seccion--tinte {
+  background: var(--superficie-tinte);
+}
+
+.seccion__cabecera {
+  max-width: 44rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.seccion__boton {
+  margin-top: 2rem;
+}
+
+.titulo-seccion {
+  font-size: clamp(2.1rem, 4.2vw, 3.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.bajada {
+  max-width: 52ch;
+  margin-top: 1.25rem;
+  color: var(--tinta-suave);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+/* Parte del título en tono suave: el énfasis se hace con color, en la misma
+   fuente, en vez de mezclar tipografías. */
+.tenue {
+  color: var(--tinta-suave);
+}
+
+/* Etiqueta chiquita sobre un título. Se usa solo dos veces en toda la página
+   (hero y piletas): si estuviera en cada sección, pierde sentido. */
+.etiqueta {
+  display: inline-flex;
+  margin-bottom: 1.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--tinta);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* "Doble bisel": ninguna foto ni tarjeta se apoya plana sobre el fondo.
+   Hay una bandeja exterior (.bisel: fondo apenas marcado, línea finísima y
+   un borde de 6px) y adentro el contenido (.bisel__nucleo) con su propio
+   brillo interior. El radio de adentro es el de afuera menos ese borde, así
+   las dos curvas quedan paralelas. */
+.bisel {
+  height: 100%;
+  padding: var(--bisel);
+  border-radius: var(--radio);
+  background: color-mix(in srgb, var(--tinta) 4%, transparent);
+  box-shadow:
+    0 0 0 1px var(--linea),
+    var(--sombra-suave);
+}
+
+.bisel__nucleo {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radio-nucleo);
+  background: var(--superficie);
+  box-shadow: var(--resalte);
+}
+
+.bisel__nucleo > img {
+  object-fit: cover;
+}
+
+/* Botones: píldora con el ícono en su propio círculo, pegado a la derecha. */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.4375rem 0.4375rem 0.4375rem 1.375rem;
+  border-radius: 999px;
+  font-family: var(--fuente-texto);
+  font-size: 0.975rem;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    scale 500ms var(--curva),
+    box-shadow 500ms var(--curva),
+    background-color 500ms var(--curva);
+}
+
+.boton:active {
+  scale: 0.98;
+}
+
+.boton__icono {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  transition:
+    translate 500ms var(--curva),
+    scale 500ms var(--curva);
+}
+
+/* Al pasar el mouse, el círculo se corre en diagonal: "tensión" adentro del
+   botón, en vez de solo cambiar de color. */
+.boton:hover .boton__icono {
+  translate: 3px -1px;
+  scale: 1.06;
+}
+
+.boton--primario {
+  background: var(--boton);
+  color: var(--boton-tinta);
+  box-shadow: var(--sombra-suave);
+}
+
+.boton--primario .boton__icono {
+  background: var(--boton-icono);
+  color: var(--boton-icono-tinta);
+}
+
+.boton--primario:hover {
+  box-shadow: var(--sombra);
+}
+
+.boton--secundario {
+  background: transparent;
+  color: var(--tinta);
+  box-shadow: inset 0 0 0 1px var(--linea-fuerte);
+}
+
+.boton--secundario .boton__icono {
+  background: var(--acento-suave);
+  color: var(--tinta);
+}
+
+.boton--secundario:hover {
+  background: var(--acento-suave);
+}
+
+/* Para fondos oscuros (el panel de contacto). */
+.boton--acento {
+  background: var(--acento);
+  color: var(--acento-tinta);
+}
+
+.boton--acento .boton__icono {
+  background: rgb(13 23 17 / 0.12);
+  color: var(--acento-tinta);
+}
+
+/* Marca: isotipo en ficha clara + nombre. */
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.marca__ficha {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  /* Siempre claro, también en modo oscuro: las letras del logo son verde
+     oscuro y se perderían sobre un fondo oscuro. */
+  background: #f7f9f4;
+  box-shadow: 0 0 0 1px var(--linea);
+}
+
+.marca__ficha img {
+  width: 68%;
+  height: auto;
+}
+
+.marca__nombre {
+  font-family: var(--fuente-titulos);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.marca__nombre span {
+  font-weight: 400;
+  color: var(--tinta-suave);
+}
+
+/* --------------------------------------------------------------------------
+   4. Header: isla flotante + menú móvil
+   -------------------------------------------------------------------------- */
+
+/* La isla: píldora de vidrio separada del borde de arriba, centrada y del
+   ancho de su contenido. backdrop-filter (el desenfoque de lo que pasa por
+   detrás) solo se usa en elementos fijos como este: en contenido que
+   scrollea, obligaría al navegador a redibujar todo el tiempo. */
+.isla {
+  position: fixed;
+  top: 1rem;
+  left: 0;
+  right: 0;
+  z-index: var(--z-isla);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  width: max-content;
+  max-width: calc(100% - 2 * var(--margen));
+  margin-inline: auto;
+  padding: 0.4375rem;
+  padding-left: 0.5rem;
+  border-radius: 999px;
+  background: var(--vidrio);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    0 0 0 1px var(--linea),
+    var(--sombra-suave),
+    var(--resalte);
+}
+
+.isla__marca {
+  text-decoration: none;
+  color: var(--tinta);
+  border-radius: 999px;
+}
+
+.isla__nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.isla__link {
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    color 400ms var(--curva),
+    background-color 400ms var(--curva);
+}
+
+.isla__link:hover {
+  color: var(--tinta);
+  background: var(--acento-suave);
+}
+
+/* Botón de menú: dos líneas que, al abrir, giran y se cruzan en una X. */
+.hamburguesa {
+  position: relative;
+  display: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--tinta);
+  cursor: pointer;
+}
+
+.hamburguesa__linea {
+  position: absolute;
+  left: 50%;
+  width: 1.125rem;
+  height: 1.5px;
+  margin-left: -0.5625rem;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    translate 500ms var(--curva),
+    rotate 500ms var(--curva);
+}
+
+.hamburguesa__linea:nth-child(1) {
+  top: calc(50% - 4px);
+}
+
+.hamburguesa__linea:nth-child(2) {
+  top: calc(50% + 3px);
+}
+
+/* Cada línea viaja 3.5px hacia el centro y gira 45° para un lado. */
+.hamburguesa[aria-expanded="true"] .hamburguesa__linea:nth-child(1) {
+  translate: 0 3.5px;
+  rotate: 45deg;
+}
+
+.hamburguesa[aria-expanded="true"] .hamburguesa__linea:nth-child(2) {
+  translate: 0 -3.5px;
+  rotate: -45deg;
+}
+
+/* Menú móvil: ocupa toda la pantalla, con vidrio espeso. Los links entran
+   subiendo de a uno (--i los numera, ver Header.jsx). */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2.5rem;
+  padding: 7.5rem var(--margen) 2.5rem;
+  background: color-mix(in srgb, var(--fondo) 88%, transparent);
+  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms var(--curva);
+}
+
+.menu.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.menu__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.menu__link,
+.menu__pie {
+  opacity: 0;
+  translate: 0 3rem;
+  transition:
+    opacity 700ms var(--curva),
+    translate 700ms var(--curva);
+  transition-delay: calc(var(--i, 0) * 60ms + 80ms);
+}
+
+.menu.is-open .menu__link,
+.menu.is-open .menu__pie {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.menu__link {
+  padding-block: 0.35rem;
+  font-family: var(--fuente-titulos);
+  font-size: clamp(2.25rem, 10vw, 3.25rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  text-decoration: none;
+}
+
+.menu__pie {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.menu__dato {
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+}
+
+/* Escritorio: links y botón en la isla; el menú móvil no existe. */
+@media (max-width: 1023px) {
+  .isla {
+    width: calc(100% - 2 * var(--margen));
+    justify-content: space-between;
+  }
+
+  .isla__nav,
+  .isla__cta {
+    display: none;
+  }
+
+  .hamburguesa {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .menu {
+    display: none;
+  }
+}
+
+/* Si el navegador no soporta el desenfoque, o la persona pidió menos
+   transparencias en su sistema: fondos sólidos, siempre legibles. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .isla,
+  .menu {
+    background: var(--superficie);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .isla,
+  .menu {
+    background: var(--superficie);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Secciones
+   -------------------------------------------------------------------------- */
+
+/* --- Hero ---------------------------------------------------------------- */
+
+/* min-height en "dvh" y no "vh": en el celular, la barra de direcciones
+   aparece y desaparece, y con vh la página "salta". */
+.hero {
+  display: grid;
+  align-items: center;
+  min-height: 100dvh;
+  padding-block: 6rem 3rem;
+}
+
+.hero__grilla {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: center;
+  gap: 2rem;
+}
+
+.hero__texto {
+  grid-column: 1 / span 7;
+}
+
+.hero__titulo {
+  font-size: clamp(2.6rem, 5.4vw, 4.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.hero__bajada {
+  max-width: 34rem;
+  margin-top: 1.75rem;
+  color: var(--tinta-suave);
+  font-size: 1.1875rem;
+  line-height: 1.55;
+}
+
+.hero__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+}
+
+.hero__foto {
+  grid-column: 8 / -1;
+}
+
+.hero__foto .bisel__nucleo {
+  aspect-ratio: 4 / 5;
+  max-height: calc(100dvh - 9rem);
+  width: 100%;
+}
+
+/* La pileta está a la derecha de la foto: al recortarla vertical, se
+   centra ahí para que no quede afuera. */
+.hero__foto .bisel__nucleo > img {
+  object-position: 68% 50%;
+}
+
+@media (max-width: 1023px) {
+  .hero {
+    min-height: auto;
+    padding-block: 7.5rem 2rem;
+  }
+
+  .hero__texto,
+  .hero__foto {
+    grid-column: 1 / -1;
+  }
+
+  .hero__foto {
+    margin-top: 1.5rem;
+  }
+
+  .hero__foto .bisel__nucleo {
+    aspect-ratio: 4 / 3;
+    max-height: none;
+  }
+}
+
+/* --- Servicios (bento) --------------------------------------------------- */
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: minmax(16rem, auto);
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Cuánto ocupa cada celda: viene de data/sitio.js (columnas y filas). */
+.bento__celda {
+  grid-column: span var(--columnas, 4);
+  grid-row: span var(--filas, 1);
+}
+
+.celda {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+.celda__icono {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--tinta);
+}
+
+.celda__texto {
+  position: relative;
+  max-width: 30rem;
+}
+
+.celda__titulo {
+  font-size: clamp(1.35rem, 2vw, 1.65rem);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+
+.celda__detalle {
+  margin-top: 0.5rem;
+  color: var(--tinta-suave);
+}
+
+/* Celdas con foto: la foto ocupa todo el fondo, con un degradé verde oscuro
+   abajo para que el texto blanco se lea sobre cualquier imagen. */
+.celda__foto {
+  object-fit: cover;
+  transition: scale 1200ms var(--curva);
+}
+
+.bento__celda--foto .bisel__nucleo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(10 26 16 / 0.86) 0%, rgb(10 26 16 / 0.35) 45%, rgb(10 26 16 / 0) 70%);
+  pointer-events: none;
+}
+
+/* El ícono y el texto quedan por encima del degradé. */
+.bento__celda--foto .celda__icono,
+.bento__celda--foto .celda__texto {
+  z-index: 1;
+}
+
+/* Sin desenfoque (backdrop-filter): esto scrollea, y desenfocar contenido
+   que se mueve obliga al navegador a redibujar en cada cuadro. */
+.bento__celda--foto .celda__icono {
+  background: rgb(10 26 16 / 0.42);
+  color: #f3f7ef;
+  box-shadow: inset 0 0 0 1px rgb(247 249 244 / 0.22);
+}
+
+.bento__celda--foto .celda__titulo {
+  color: #f3f7ef;
+}
+
+.bento__celda--foto .celda__detalle {
+  color: rgb(243 247 239 / 0.82);
+}
+
+.bento__celda--foto:hover .celda__foto {
+  scale: 1.04;
+}
+
+.bento__celda--oscura .bisel__nucleo {
+  background: var(--panel);
+  color: var(--panel-tinta);
+}
+
+.bento__celda--oscura .celda__icono {
+  background: rgb(238 244 232 / 0.1);
+  color: var(--panel-tinta);
+}
+
+.bento__celda--oscura .celda__detalle {
+  color: var(--panel-tinta-suave);
+}
+
+.bento__celda--acento .bisel__nucleo {
+  background: var(--acento);
+  color: var(--acento-tinta);
+}
+
+.bento__celda--acento .celda__icono {
+  background: rgb(13 23 17 / 0.1);
+  color: var(--acento-tinta);
+}
+
+.bento__celda--acento .celda__detalle {
+  color: var(--acento-tinta);
+  opacity: 0.78;
+}
+
+/* Tablet: 2 columnas. Las fotos a lo ancho; el resto, de a dos por fila. */
+@media (max-width: 1023px) {
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(14rem, auto);
+  }
+
+  .bento__celda {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .bento__celda--foto {
+    grid-column: 1 / -1;
+    min-height: 22rem;
+  }
+}
+
+/* Celular: una sola columna. */
+@media (max-width: 767px) {
+  .bento {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+  }
+
+  .bento__celda {
+    min-height: 13rem;
+  }
+
+  .bento__celda--foto {
+    min-height: 20rem;
+  }
+}
+
+/* --- Piletas ------------------------------------------------------------- */
+
+.piletas {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: center;
+  gap: 2rem;
+}
+
+.piletas__texto {
+  grid-column: 1 / span 6;
+}
+
+.piletas__comparador {
+  grid-column: 8 / -1;
+}
+
+.piletas__lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.75rem 2rem;
+  margin: 2.75rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.piletas__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+}
+
+.piletas__icono {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: 0 0 0 1px var(--linea);
+}
+
+.piletas__titulo {
+  font-size: 1.0625rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.piletas__detalle {
+  margin-top: 0.3rem;
+  color: var(--tinta-suave);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* Comparador antes/después (ver AntesDespues.jsx). --corte va de 0 a 100. */
+.comparador {
+  margin: 0;
+}
+
+.comparador__marco {
+  aspect-ratio: 3 / 4;
+  touch-action: pan-y; /* el dedo puede scrollear la página en vertical */
+}
+
+.comparador__foto {
+  object-fit: cover;
+}
+
+/* La foto de "antes" se recorta desde la derecha: se ve solo hasta --corte. */
+.comparador__antes {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--corte) * 1%) 0 0);
+}
+
+/* La guía ocupa todo el ancho y se desplaza con transform (lo más fluido
+   para el navegador). Su línea está en el centro, así que la corremos
+   (--corte - 50)% para que quede justo en el borde del recorte. */
+.comparador__guia {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  translate: calc((var(--corte) - 50) * 1%) 0;
+  pointer-events: none;
+}
+
+.comparador__guia::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: rgb(247 249 244 / 0.9);
+  box-shadow: 0 0 12px rgb(10 26 16 / 0.35);
+}
+
+.comparador__perilla {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  background: #f7f9f4;
+  color: #13261a;
+  box-shadow:
+    0 10px 30px -8px rgb(10 26 16 / 0.5),
+    0 0 0 6px rgb(247 249 244 / 0.28);
+  transition: scale 500ms var(--curva);
+}
+
+.comparador__marco:hover .comparador__perilla {
+  scale: 1.08;
+}
+
+/* Foco del teclado: el anillo se dibuja en la perilla, que es lo que se ve. */
+.comparador__marco:has(.comparador__control:focus-visible) .comparador__perilla {
+  outline: 2px solid var(--acento);
+  outline-offset: 4px;
+}
+
+/* El control real: invisible, encima de todo, del tamaño de la foto. */
+.comparador__control {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+
+.comparador__leyenda {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-inline: 0.5rem;
+  color: var(--tinta-suave);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+@media (max-width: 1023px) {
+  .piletas__texto,
+  .piletas__comparador {
+    grid-column: 1 / -1;
+  }
+
+  .piletas__comparador {
+    width: 100%;
+    max-width: 34rem;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .piletas__lista {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- Cómo trabajamos ----------------------------------------------------- */
+
+.manifiesto {
+  max-width: 24ch;
+  margin-inline: auto;
+  font-size: clamp(2rem, 4.6vw, 3.75rem);
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+  text-align: center;
+}
+
+.pasos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5rem;
+  margin: clamp(3.5rem, 7vw, 6rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Sin tarjetas: una línea fina arriba de cada paso alcanza para separarlos. */
+.paso {
+  padding-top: 1.75rem;
+  box-shadow: inset 0 1px 0 var(--linea-fuerte);
+}
+
+.paso__icono {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--tinta);
+}
+
+.paso__titulo {
+  margin-top: 1.5rem;
+  font-size: 1.375rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.paso__texto {
+  max-width: 32ch;
+  margin-top: 0.6rem;
+  color: var(--tinta-suave);
+}
+
+@media (max-width: 767px) {
+  .manifiesto {
+    text-align: left;
+  }
+
+  .pasos {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* --- Trabajos (cascada) -------------------------------------------------- */
+
+/* Escritorio: las tres fotos se ubican en posiciones fijas (en %) dentro de
+   una caja y se superponen. La proporción 13:6 está calculada para que la
+   foto más baja (la de la derecha: arranca al 30% y mide 43% de ancho en
+   4:3) termine justo en el borde de abajo, sin dejar un hueco vacío.
+   `isolation` crea una capa propia: los z-index de adentro no se mezclan con
+   los del resto de la página (el header, el menú). */
+.cascada {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 13 / 6;
+}
+
+.cascada__foto {
+  position: absolute;
+  margin: 0;
+  transition:
+    rotate 900ms var(--curva),
+    scale 900ms var(--curva);
+}
+
+.cascada__foto:hover {
+  rotate: 0deg;
+  scale: 1.02;
+  z-index: 4;
+}
+
+.cascada__foto--izquierda {
+  top: 8%;
+  left: 0;
+  width: 46%;
+  rotate: -2deg;
+  z-index: 1;
+}
+
+.cascada__foto--centro {
+  top: 0;
+  left: 37%;
+  width: 27%;
+  rotate: 2.5deg;
+  z-index: 3;
+}
+
+.cascada__foto--derecha {
+  top: 30%;
+  right: 0;
+  width: 43%;
+  rotate: -1deg;
+  z-index: 2;
+}
+
+.cascada__foto .bisel {
+  box-shadow:
+    0 0 0 1px var(--linea),
+    var(--sombra);
+}
+
+.cascada__foto--izquierda .bisel__nucleo,
+.cascada__foto--derecha .bisel__nucleo {
+  aspect-ratio: 4 / 3;
+}
+
+.cascada__foto--centro .bisel__nucleo {
+  aspect-ratio: 3 / 4;
+}
+
+.cascada .bisel__nucleo > img {
+  object-fit: cover;
+}
+
+/* Tablet y celular: sin giros ni superposición (al tocar, una foto encima
+   de otra molesta). Van apiladas, derechas. */
+@media (max-width: 1023px) {
+  .cascada {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    aspect-ratio: auto;
+  }
+
+  .cascada__foto {
+    position: static;
+    width: auto;
+    rotate: none;
+  }
+
+  .cascada__foto:hover {
+    rotate: none;
+    scale: 1;
+  }
+
+  .cascada__foto--izquierda {
+    grid-column: 1 / -1;
+  }
+
+  .cascada__foto--centro .bisel__nucleo,
+  .cascada__foto--derecha .bisel__nucleo {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+@media (max-width: 767px) {
+  .cascada {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cascada__foto--centro .bisel__nucleo,
+  .cascada__foto--derecha .bisel__nucleo {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* --- Contacto ------------------------------------------------------------ */
+
+.bisel--panel {
+  box-shadow:
+    0 0 0 1px var(--linea),
+    var(--sombra);
+}
+
+/* Panel verde bosque, con un halo verde hoja muy suave en una esquina. */
+.contacto {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 3rem;
+  padding: clamp(2rem, 6vw, 5rem);
+  background:
+    radial-gradient(circle at 100% 0%, rgb(125 181 68 / 0.22), rgb(125 181 68 / 0) 55%),
+    var(--panel);
+  color: var(--panel-tinta);
+}
+
+.contacto .bajada {
+  color: var(--panel-tinta-suave);
+  margin-bottom: 2.25rem;
+}
+
+.contacto__datos {
+  display: grid;
+  gap: 1.75rem;
+  margin: 0;
+}
+
+.contacto__datos dt {
+  color: var(--panel-tinta-suave);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.contacto__datos dd {
+  margin: 0.35rem 0 0;
+  font-family: var(--fuente-titulos);
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.contacto__datos a {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: background-size 600ms var(--curva);
+}
+
+.contacto__datos a:hover {
+  background-size: 100% 1px;
+}
+
+.contacto__redes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+
+@media (max-width: 1023px) {
+  .contacto {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- Footer -------------------------------------------------------------- */
+
+.pie {
+  padding-block: 1rem 2.5rem;
+}
+
+.pie__grilla {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 2rem;
+  padding-bottom: 2.5rem;
+}
+
+.pie__lema {
+  margin-top: 1rem;
+  color: var(--tinta-suave);
+}
+
+.pie__nav {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.pie__nav a {
+  justify-self: start;
+  color: var(--tinta-suave);
+  text-decoration: none;
+  transition: color 400ms var(--curva);
+}
+
+.pie__nav a:hover {
+  color: var(--tinta);
+}
+
+.pie__redes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pie__redes a {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  color: var(--tinta);
+  box-shadow: inset 0 0 0 1px var(--linea-fuerte);
+  transition:
+    background-color 400ms var(--curva),
+    scale 400ms var(--curva);
+}
+
+.pie__redes a:hover {
+  background: var(--acento-suave);
+}
+
+.pie__redes a:active {
+  scale: 0.96;
+}
+
+.pie__legal {
+  color: var(--tinta-suave);
+  font-size: 0.875rem;
+}
+
+/* La línea va en el párrafo y no en el contenedor: así mide lo mismo que el
+   contenido (el contenedor tiene padding a los costados). */
+.pie__legal p {
+  padding-top: 1.5rem;
+  box-shadow: inset 0 1px 0 var(--linea);
+}
+
+@media (max-width: 767px) {
+  .pie__grilla {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Animaciones de entrada
+   -------------------------------------------------------------------------- */
+
+/* Todo se anima solo con translate, scale y opacity: son las propiedades que
+   el navegador mueve sin recalcular el diseño de la página (fluido incluso
+   en celulares modestos). Y todo se desactiva si la persona pidió reducir el
+   movimiento en su sistema. */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero: entra apenas carga la página, escalonado según --i. */
+  .entrada {
+    animation: entrada 1100ms var(--curva) both;
+    animation-delay: calc(var(--i, 0) * 110ms + 100ms);
+  }
+
+  /* La foto del hero no se desvanece (es el LCP y tiene que verse ya):
+     solo se acerca apenas, de 1.08 a 1. */
+  .hero__foto .bisel__nucleo > img {
+    animation: acercar 1800ms var(--curva) both;
+  }
+}
+
+@keyframes entrada {
+  from {
+    opacity: 0;
+    translate: 0 2.5rem;
+  }
+}
+
+@keyframes acercar {
+  from {
+    scale: 1.08;
+  }
+}
+
+/* Resto de la página: cada [data-reveal] arranca invisible y más abajo, y
+   Revelar.jsx lo pasa a "shown" cuando entra en pantalla.
+   `scripting: enabled` = solo si hay JavaScript. Sin JS, nadie cambiaría el
+   atributo y el contenido quedaría escondido para siempre. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    translate: 0 4rem;
+    transition:
+      opacity 900ms var(--curva) var(--retraso, 0ms),
+      translate 1100ms var(--curva) var(--retraso, 0ms);
+  }
+
+  [data-reveal="shown"] {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
