@@ -16,8 +16,15 @@ export default function Piletas() {
         <div className="piletas__texto" data-reveal>
           <p className="etiqueta">Piscinas</p>
           <h2 className="titulo-seccion">Del verde al cristalino.</h2>
-          <p className="bajada">La misma pileta, antes y después de nuestro trabajo. Deslizá sobre la foto para comparar.</p>
+          <p className="bajada">
+            Del mantenimiento periódico a la puesta a punto completa. Deslizá sobre la foto para ver la misma pileta, antes y
+            después.
+          </p>
 
+          {/* Lista en dos columnas, separada por líneas finas como una ficha
+              técnica. Si la cantidad es impar, la última ocupa el ancho
+              completo (ver .piletas__item en el CSS): la grilla nunca queda
+              con un hueco. */}
           <ul className="piletas__lista">
             {SERVICIOS_PILETA.map((servicio) => {
               const Icono = servicio.icono;
@@ -26,10 +33,7 @@ export default function Piletas() {
                   <span className="piletas__icono" aria-hidden="true">
                     <Icono size={20} weight="light" />
                   </span>
-                  <div>
-                    <h3 className="piletas__titulo">{servicio.titulo}</h3>
-                    <p className="piletas__detalle">{servicio.detalle}</p>
-                  </div>
+                  {servicio.titulo}
                 </li>
               );
             })}

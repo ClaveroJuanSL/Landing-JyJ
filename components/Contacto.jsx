@@ -1,6 +1,7 @@
 import { WhatsappLogo } from "@phosphor-icons/react/ssr";
 import {
   FACEBOOK,
+  GOOGLE_MAPS,
   INSTAGRAM,
   INSTAGRAM_USUARIO,
   TELEFONO,
@@ -42,7 +43,12 @@ export default function Contacto() {
               </div>
               <div>
                 <dt>Zona de trabajo</dt>
-                <dd>{ZONA}</dd>
+                <dd className="contacto__zona">
+                  {ZONA}
+                  <a href={GOOGLE_MAPS} target="_blank" rel="noopener">
+                    Ver en Google Maps
+                  </a>
+                </dd>
               </div>
               <div>
                 <dt>Redes</dt>

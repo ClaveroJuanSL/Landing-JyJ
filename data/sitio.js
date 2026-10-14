@@ -37,10 +37,13 @@ import {
   TreeEvergreen,
   Shovel,
   Wall,
-  Drop,
-  TestTube,
-  Funnel,
+  SwimmingPool,
   Recycle,
+  TestTube,
+  Broom,
+  PaintRoller,
+  Funnel,
+  Wrench,
   WhatsappLogo,
   Receipt,
   SunHorizon,
@@ -122,12 +125,17 @@ export const SERVICIOS_JARDIN = [
 ];
 
 // --- Servicios de pileta --------------------------------------------------------
+// La lista que pidió el cliente, en su orden. Van solo con título: son
+// servicios que se entienden solos, y así la lista se lee de un vistazo.
 
 export const SERVICIOS_PILETA = [
-  { titulo: "Limpieza y mantenimiento", detalle: "Agua limpia, segura y lista para disfrutar.", icono: Drop },
-  { titulo: "Recuperación de agua", detalle: "De agua verde a cristalina.", icono: Recycle },
-  { titulo: "Nivelación de pH", detalle: "El agua equilibrada cuida la piel y la pileta.", icono: TestTube },
-  { titulo: "Cambio de material filtrante", detalle: "Para que el filtro vuelva a hacer su trabajo.", icono: Funnel },
+  { titulo: "Mantenimiento de piscina", icono: SwimmingPool },
+  { titulo: "Recuperación de agua", icono: Recycle },
+  { titulo: "Nivelación de pH", icono: TestTube },
+  { titulo: "Desagote y cepillado", icono: Broom },
+  { titulo: "Pintura", icono: PaintRoller },
+  { titulo: "Cambio de material filtrante", icono: Funnel },
+  { titulo: "Arreglos de construcción", icono: Wrench },
 ];
 
 // --- Antes y después ------------------------------------------------------------
@@ -182,3 +190,73 @@ export const TRABAJOS = [
     posicion: "derecha",
   },
 ];
+
+// --- Galería (más trabajos, debajo de la cascada) -------------------------------
+// Vacía por ahora: el cliente va a mandar más fotos. Para sumar una:
+//   1. copiar la foto en assets/img/ (nombre en minúsculas, sin espacios)
+//   2. importarla arriba de todo, junto a las otras
+//   3. agregar { foto: nombreImportado, alt: "qué se ve en la foto" } acá
+// Mientras la lista esté vacía, la galería no se muestra. Las fotos pueden
+// ser verticales u horizontales: todas se recortan al cuadrado, así que
+// conviene que lo importante quede en el centro de la foto.
+
+export const GALERIA = [];
+
+// --- Reseñas de Google ----------------------------------------------------------
+// Copiadas a mano de la ficha de Google del negocio (no se cargan solas:
+// para eso hace falta la API de Google Places, que pide una clave y una
+// cuenta de facturación; para una landing no vale la pena).
+//
+// Cuando entren reseñas nuevas, actualizar `promedio` y sumarlas a la lista.
+// Solo van las que tienen texto: las que son solo estrellas ya cuentan en el
+// promedio. El texto va tal cual lo escribió la persona (sin corregirlo: es
+// una cita, y una reseña "demasiado prolija" parece inventada). Del nombre se muestra el nombre de pila y la inicial del
+// apellido, como hacen la mayoría de los sitios: alcanza para que se note
+// que es una persona real sin exponer su nombre completo.
+
+export const CALIFICACION = {
+  promedio: 5,
+  fuente: "Google",
+};
+
+export const RESENAS = [
+  {
+    nombre: "Nahuel A.",
+    texto: "Servicio excepcional. Muy prolijos respetuosos y cumplidores!!! Se recomienda 100%",
+    estrellas: 5,
+  },
+];
+
+// --- Misión y visión ------------------------------------------------------------
+// TEXTO PROVISORIO: el cliente va a pasar el suyo. Está escrito con lo que
+// ya sabemos del negocio para ver cómo queda el diseño; reemplazar `texto`
+// cuando llegue el definitivo.
+
+export const MISION_VISION = [
+  {
+    titulo: "Misión",
+    texto: "Cuidar los jardines y las piletas de Juana Koslay y alrededores con trabajo prolijo, puntual y trato directo, para que cada familia disfrute de sus espacios sin preocuparse por el mantenimiento.",
+  },
+  {
+    titulo: "Visión",
+    texto: "Ser la referencia de confianza en mantenimiento de espacios verdes y piscinas de la zona, y crecer trabajo a trabajo gracias a la recomendación de nuestros clientes.",
+  },
+];
+
+// --- Sobre mí (el dueño) --------------------------------------------------------
+// TEXTO Y FOTO PROVISORIOS: el cliente va a mandar fotos suyas y su
+// presentación. Mientras `foto` sea null se muestra un recuadro con el logo;
+// mientras `nombre` sea null no se muestra la firma.
+// Para la foto: importarla arriba (como las demás) y poner acá
+// `foto: nombreImportado` y `alt: "Nombre trabajando en un jardín"`.
+
+export const AUTOR = {
+  nombre: null,
+  rol: "Dueño de JYJ Mantenimiento",
+  foto: null,
+  alt: "",
+  parrafos: [
+    "Detrás de JYJ hay una persona: la misma que te pasa el presupuesto, corta el césped y deja la pileta lista para usar.",
+    "Trabajo en Juana Koslay y alrededores, y cada espacio que cuido lo trato como si fuera el de mi casa. Si tenés una duda, me escribís a mí y te respondo yo.",
+  ],
+};

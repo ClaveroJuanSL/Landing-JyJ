@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { InstagramLogo } from "@phosphor-icons/react/ssr";
-import { TRABAJOS } from "@/data/sitio";
+import { GALERIA, TRABAJOS } from "@/data/sitio";
 import { INSTAGRAM } from "@/data/contacto";
 import Boton from "@/components/Boton";
 
@@ -37,6 +37,24 @@ export default function Trabajos() {
             </figure>
           ))}
         </div>
+
+        {/* Galería: las fotos extra que vaya mandando el cliente (GALERIA en
+            data/sitio.js). Si la lista está vacía no se dibuja nada.
+            Son cuadrados de un tercio del ancho (la mitad en celular): eso
+            le dice `sizes` al navegador para que baje la versión justa. */}
+        {GALERIA.length > 0 && (
+          <ul className="galeria">
+            {GALERIA.map((item) => (
+              <li key={item.alt} className="galeria__item" data-reveal>
+                <div className="bisel">
+                  <div className="bisel__nucleo">
+                    <Image src={item.foto} alt={item.alt} fill sizes="(max-width: 767px) 50vw, 33vw" placeholder="blur" />
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </section>
   );

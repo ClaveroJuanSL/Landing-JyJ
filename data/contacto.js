@@ -12,11 +12,20 @@ export const TELEFONO = "2664 028121";
 export const WHATSAPP = "https://wa.me/5492664028121";
 export const INSTAGRAM = "https://www.instagram.com/jyj.mantenimiento/";
 export const INSTAGRAM_USUARIO = "@jyj.mantenimiento";
-// A confirmar con el cliente: el flyer dice "jyj.mantenimiento" para
-// Instagram y Facebook, pero no está verificado que la página de Facebook
-// use exactamente esa dirección.
-export const FACEBOOK = "https://www.facebook.com/jyj.mantenimiento";
+// El flyer dice "jyj.mantenimiento", pero la página de Facebook que Google
+// asocia al negocio (con el mismo teléfono) es @JyJmantenimiento2016.
+export const FACEBOOK = "https://www.facebook.com/JyJmantenimiento2016";
 export const ZONA = "Juana Koslay y alrededores";
+
+// --- Ficha de Google (Google Business Profile) ------------------------------------
+// El "place ID" es el identificador fijo de la ficha del negocio en Google.
+// A diferencia del link para compartir (share.google/…), no cambia si el
+// cliente edita el nombre o la dirección, y con él se arman los tres links
+// oficiales: ver en Maps, leer las reseñas y escribir una.
+const GOOGLE_PLACE_ID = "ChIJwXNb7pk_1JUR2YAgWaI3hwc";
+export const GOOGLE_MAPS = `https://www.google.com/maps/search/?api=1&query=JYJ%20Mantenimiento&query_place_id=${GOOGLE_PLACE_ID}`;
+export const GOOGLE_RESENAS = `https://search.google.com/local/reviews?placeid=${GOOGLE_PLACE_ID}`;
+export const GOOGLE_ESCRIBIR_RESENA = `https://search.google.com/local/writereview?placeid=${GOOGLE_PLACE_ID}`;
 
 // Arma un link de WhatsApp con un mensaje ya escrito.
 // encodeURIComponent convierte "Hola, quiero…" en "Hola%2C%20quiero…",
@@ -37,5 +46,7 @@ export const NAV = [
   { href: "/#servicios", texto: "Servicios" },
   { href: "/#piletas", texto: "Piletas" },
   { href: "/#trabajos", texto: "Trabajos" },
+  { href: "/#resenas", texto: "Reseñas" },
+  { href: "/#mision", texto: "Nosotros" },
   { href: "/#contacto", texto: "Contacto" },
 ];

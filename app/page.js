@@ -10,8 +10,11 @@ import Servicios from "@/components/Servicios";
 import Piletas from "@/components/Piletas";
 import ComoTrabajamos from "@/components/ComoTrabajamos";
 import Trabajos from "@/components/Trabajos";
+import Resenas from "@/components/Resenas";
+import MisionVision from "@/components/MisionVision";
+import SobreMi from "@/components/SobreMi";
 import Contacto from "@/components/Contacto";
-import { FACEBOOK, INSTAGRAM, WHATSAPP } from "@/data/contacto";
+import { FACEBOOK, GOOGLE_MAPS, INSTAGRAM, WHATSAPP } from "@/data/contacto";
 
 // Datos estructurados (schema.org): le cuentan a Google, en un formato que
 // entiende sin leer la página, que esto es un negocio local, qué hace, dónde
@@ -21,7 +24,8 @@ const negocioLocal = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: "JYJ Mantenimiento",
-  description: "Mantenimiento de jardines y piscinas: podas, césped, champas, cercos, nivelación de suelo y limpieza de piletas.",
+  description:
+    "Mantenimiento de jardines y piscinas: podas, césped, champas, cercos, nivelación de suelo, limpieza, recuperación de agua, pintura y arreglos de piletas.",
   telephone: "+54 9 2664 02-8121",
   address: {
     "@type": "PostalAddress",
@@ -30,7 +34,11 @@ const negocioLocal = {
     addressCountry: "AR",
   },
   areaServed: ["Juana Koslay", "San Luis"],
-  sameAs: [INSTAGRAM, FACEBOOK, WHATSAPP],
+  // La ficha de Google Maps: le confirma a Google que este sitio y esa ficha
+  // son el mismo negocio. (Las reseñas NO se declaran acá: Google ignora, y
+  // puede penalizar, las reseñas que un negocio publica sobre sí mismo.)
+  hasMap: GOOGLE_MAPS,
+  sameAs: [INSTAGRAM, FACEBOOK, WHATSAPP, GOOGLE_MAPS],
 };
 
 export default function Home() {
@@ -44,6 +52,9 @@ export default function Home() {
       <Piletas />
       <ComoTrabajamos />
       <Trabajos />
+      <Resenas />
+      <MisionVision />
+      <SobreMi />
       <Contacto />
     </main>
   );

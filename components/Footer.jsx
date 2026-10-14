@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { FacebookLogo, InstagramLogo, WhatsappLogo } from "@phosphor-icons/react/ssr";
-import { FACEBOOK, INSTAGRAM, NAV, WHATSAPP } from "@/data/contacto";
+import { FacebookLogo, GoogleLogo, InstagramLogo, WhatsappLogo } from "@phosphor-icons/react/ssr";
+import { FACEBOOK, GOOGLE_MAPS, INSTAGRAM, NAV, WHATSAPP } from "@/data/contacto";
 import { NEGOCIO } from "@/data/sitio";
 import Marca from "@/components/Marca";
 
@@ -35,6 +35,9 @@ export default function Footer() {
           </a>
           <a href={FACEBOOK} target="_blank" rel="noopener" aria-label="Facebook">
             <FacebookLogo size={22} weight="light" />
+          </a>
+          <a href={GOOGLE_MAPS} target="_blank" rel="noopener" aria-label="Google Maps">
+            <GoogleLogo size={22} weight="light" />
           </a>
         </div>
       </div>
