@@ -23,8 +23,20 @@ import champasColocacion from "@/assets/img/champas-colocacion.jpg";
 import piletaAntes from "@/assets/img/pileta-antes.jpg";
 import piletaDespues from "@/assets/img/pileta-despues.jpg";
 import piletaReposera from "@/assets/img/pileta-reposera.jpg";
-import canteroVereda from "@/assets/img/cantero-vereda.jpg";
 import piletaCamino from "@/assets/img/pileta-camino.jpg";
+// Segunda tanda (octubre 2026): galería y retrato del fundador.
+import jardinAntes from "@/assets/img/jardin-antes.jpg";
+import jardinDespues from "@/assets/img/jardin-despues.jpg";
+import piletaPintada from "@/assets/img/pileta-pintada.jpg";
+import barrioCesped from "@/assets/img/barrio-cesped.jpg";
+import piletaAgua from "@/assets/img/pileta-agua.jpg";
+import canteroFlores from "@/assets/img/cantero-flores.jpg";
+import arbolesVereda from "@/assets/img/arboles-vereda.jpg";
+import patioCesped from "@/assets/img/patio-cesped.jpg";
+import parqueCerco from "@/assets/img/parque-cerco.jpg";
+import cespedGaleria from "@/assets/img/cesped-galeria.jpg";
+import canteroLetras from "@/assets/img/cantero-letras.jpg";
+import fundador from "@/assets/img/fundador.jpg";
 
 // --- Íconos ---------------------------------------------------------------------
 // Phosphor, versión "ssr": son componentes que no necesitan JavaScript en el
@@ -180,8 +192,8 @@ export const TRABAJOS = [
     posicion: "izquierda",
   },
   {
-    foto: canteroVereda,
-    alt: "Cantero de vereda con el césped cortado y los bordes prolijos",
+    foto: canteroFlores,
+    alt: "Cantero con flores, plantas y piedras en la vereda de un edificio",
     posicion: "centro",
   },
   {
@@ -197,10 +209,36 @@ export const TRABAJOS = [
 //   2. importarla arriba de todo, junto a las otras
 //   3. agregar { foto: nombreImportado, alt: "qué se ve en la foto" } acá
 // Mientras la lista esté vacía, la galería no se muestra. Las fotos pueden
-// ser verticales u horizontales: todas se recortan al cuadrado, así que
-// conviene que lo importante quede en el centro de la foto.
+// ser verticales u horizontales: todas se recortan al cuadrado, centradas.
+// Si lo importante queda afuera del recorte, `posicion` dice desde dónde
+// recortar (como object-position en CSS): "50% 100%" = centrada a lo ancho
+// y pegada abajo.
+// `etiqueta` (opcional) se muestra como una pastilla sobre la foto.
+//
+// El orden importa: primero el antes y después del parque (la prueba más
+// fuerte, y así quedan uno al lado del otro en cualquier pantalla), y
+// después se alternan jardines y piletas para que no queden todas juntas.
 
-export const GALERIA = [];
+export const GALERIA = [
+  {
+    foto: jardinAntes,
+    alt: "Antes: parque con el pasto alto y maleza, mientras dos operarios lo desmalezan con bordeadoras",
+    etiqueta: "Antes",
+  },
+  {
+    foto: jardinDespues,
+    alt: "Después: el mismo parque terminado, con el césped corto y parejo",
+    etiqueta: "Después",
+  },
+  { foto: piletaPintada, alt: "Pileta vacía recién pintada de celeste" },
+  { foto: barrioCesped, alt: "Césped cortado entre las casas de un barrio, junto a un camino de tierra" },
+  { foto: piletaAgua, alt: "Agua de pileta limpia y cristalina, vista de cerca" },
+  { foto: arbolesVereda, alt: "Árboles jóvenes recién plantados a lo largo de una vereda" },
+  { foto: patioCesped, alt: "Césped recién cortado junto a un patio, con un cantero de plantas al fondo" },
+  { foto: parqueCerco, alt: "Parque con el césped cortado y un cerco verde al fondo, al sol de la tarde" },
+  { foto: cespedGaleria, alt: "Césped parejo junto a una galería techada" },
+  { foto: canteroLetras, alt: "Cantero de tierra preparado bajo un sauce, detrás de un cartel de letras gigantes" },
+];
 
 // --- Reseñas de Google ----------------------------------------------------------
 // Copiadas a mano de la ficha de Google del negocio (no se cargan solas:
@@ -210,9 +248,10 @@ export const GALERIA = [];
 // Cuando entren reseñas nuevas, actualizar `promedio` y sumarlas a la lista.
 // Solo van las que tienen texto: las que son solo estrellas ya cuentan en el
 // promedio. El texto va tal cual lo escribió la persona (sin corregirlo: es
-// una cita, y una reseña "demasiado prolija" parece inventada). Del nombre se muestra el nombre de pila y la inicial del
-// apellido, como hacen la mayoría de los sitios: alcanza para que se note
-// que es una persona real sin exponer su nombre completo.
+// una cita, y una reseña "demasiado prolija" parece inventada). Del nombre
+// se muestra el nombre de pila y la inicial del apellido, como hacen la
+// mayoría de los sitios: alcanza para que se note que es una persona real
+// sin exponer su nombre completo.
 
 export const CALIFICACION = {
   promedio: 5,
@@ -228,35 +267,50 @@ export const RESENAS = [
 ];
 
 // --- Misión y visión ------------------------------------------------------------
-// TEXTO PROVISORIO: el cliente va a pasar el suyo. Está escrito con lo que
-// ya sabemos del negocio para ver cómo queda el diseño; reemplazar `texto`
-// cuando llegue el definitivo.
+// Texto del cliente, sin cambios. Cada uno tiene dos oraciones: la primera
+// (`frase`) dice qué es, y se muestra grande; la segunda (`detalle`) lo
+// desarrolla, en letra normal. Separarlas así le da jerarquía al bloque sin
+// tocar una palabra.
 
 export const MISION_VISION = [
   {
-    titulo: "Misión",
-    texto: "Cuidar los jardines y las piletas de Juana Koslay y alrededores con trabajo prolijo, puntual y trato directo, para que cada familia disfrute de sus espacios sin preocuparse por el mantenimiento.",
+    titulo: "Nuestra misión",
+    frase:
+      "Brindar servicios de jardinería, mantenimiento de espacios verdes y piscinas con calidad, compromiso y responsabilidad, buscando la plena satisfacción de nuestros clientes a través de un trabajo eficiente, personalizado y confiable.",
+    detalle:
+      "Nos esforzamos por cuidar cada espacio como si fuera propio, construyendo relaciones duraderas basadas en la confianza, el respeto y la excelencia en el servicio.",
   },
   {
-    titulo: "Visión",
-    texto: "Ser la referencia de confianza en mantenimiento de espacios verdes y piscinas de la zona, y crecer trabajo a trabajo gracias a la recomendación de nuestros clientes.",
+    titulo: "Nuestra visión",
+    frase:
+      "Ser una empresa de referencia en servicios de jardinería y mantenimiento de jardines y piscinas en Juana Koslay y la región, reconocida por la calidad de nuestro trabajo, la responsabilidad y el compromiso con cada cliente.",
+    detalle:
+      "Aspiramos a crecer de manera sostenida, ampliar nuestro equipo de trabajo, incorporar nuevas herramientas y servicios, y expandir nuestra presencia a más localidades, manteniendo siempre los valores que nos identifican.",
   },
 ];
 
-// --- Sobre mí (el dueño) --------------------------------------------------------
-// TEXTO Y FOTO PROVISORIOS: el cliente va a mandar fotos suyas y su
-// presentación. Mientras `foto` sea null se muestra un recuadro con el logo;
-// mientras `nombre` sea null no se muestra la firma.
-// Para la foto: importarla arriba (como las demás) y poner acá
-// `foto: nombreImportado` y `alt: "Nombre trabajando en un jardín"`.
+// --- Sobre mí (el fundador) -----------------------------------------------------
+// Texto del cliente, sin cambios. El primer párrafo se muestra como entrada
+// (más grande) y el último como cierre (con la letra de los títulos): ver
+// .autor__parrafos en globals.css.
+// `anios` sale del texto ("más de 12 años") y se muestra como dato sobre la
+// foto. Mientras `nombre` sea null no se muestra la firma: falta que el
+// cliente confirme cómo quiere que figure.
 
 export const AUTOR = {
   nombre: null,
-  rol: "Dueño de JYJ Mantenimiento",
-  foto: null,
-  alt: "",
+  rol: "Fundador de JyJ Mantenimiento",
+  foto: fundador,
+  alt: "Retrato del fundador de JyJ Mantenimiento, sonriendo, con saco azul y camisa blanca",
+  anios: 12,
+  titulo: "Una historia de esfuerzo,",
+  tituloTenue: "compromiso y crecimiento.",
   parrafos: [
-    "Detrás de JYJ hay una persona: la misma que te pasa el presupuesto, corta el césped y deja la pileta lista para usar.",
-    "Trabajo en Juana Koslay y alrededores, y cada espacio que cuido lo trato como si fuera el de mi casa. Si tenés una duda, me escribís a mí y te respondo yo.",
+    "Soy el fundador de JyJ Mantenimiento – Jardines y Piscinas, una empresa que representa más de 12 años de esfuerzo, dedicación y trabajo constante para crecer, mejorar y brindar cada día un mejor servicio.",
+    "A lo largo de este camino, aprendí que construir una empresa no se trata solamente de realizar un buen trabajo, sino también de cumplir con la palabra, asumir responsabilidades y generar relaciones de confianza duraderas con cada cliente.",
+    "Mi compromiso es ofrecer soluciones de jardinería y mantenimiento de jardines y piscinas con profesionalismo, responsabilidad y atención a cada detalle, entendiendo que detrás de cada servicio hay personas que confían en nosotros y esperan resultados de calidad.",
+    "Creo en el valor del trabajo bien hecho, en la mejora continua y en la importancia de crecer con bases sólidas. Por eso, trabajo día a día para fortalecer nuestro equipo, incorporar nuevas herramientas y ampliar nuestros servicios, con el objetivo de llevar JyJ Mantenimiento a más localidades y convertirnos en una empresa de referencia en nuestra región.",
+    "Este proyecto es el resultado de años de esfuerzo y perseverancia, pero también de una visión clara de futuro: seguir creciendo sin perder nuestra esencia, nuestros valores ni el compromiso que nos trajo hasta acá.",
+    "En JyJ Mantenimiento, cada trabajo es una oportunidad para demostrar que la calidad, la responsabilidad y la confianza son la base de todo lo que hacemos.",
   ],
 };

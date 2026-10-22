@@ -40,15 +40,30 @@ export default function Trabajos() {
 
         {/* Galería: las fotos extra que vaya mandando el cliente (GALERIA en
             data/sitio.js). Si la lista está vacía no se dibuja nada.
-            Son cuadrados de un tercio del ancho (la mitad en celular): eso
-            le dice `sizes` al navegador para que baje la versión justa. */}
+            Son cuadrados de un cuarto del ancho en escritorio, un tercio en
+            tablet y la mitad en celular: eso le dice `sizes` al navegador
+            para que baje la versión justa. */}
         {GALERIA.length > 0 && (
           <ul className="galeria">
             {GALERIA.map((item) => (
               <li key={item.alt} className="galeria__item" data-reveal>
                 <div className="bisel">
                   <div className="bisel__nucleo">
-                    <Image src={item.foto} alt={item.alt} fill sizes="(max-width: 767px) 50vw, 33vw" placeholder="blur" />
+                    <Image
+                      src={item.foto}
+                      alt={item.alt}
+                      fill
+                      sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                      placeholder="blur"
+                      style={item.posicion ? { objectPosition: item.posicion } : undefined}
+                    />
+                    {/* aria-hidden: el alt de la foto ya dice si es el antes o
+                        el después; leer la etiqueta otra vez sería repetir. */}
+                    {item.etiqueta && (
+                      <span className="galeria__etiqueta" aria-hidden="true">
+                        {item.etiqueta}
+                      </span>
+                    )}
                   </div>
                 </div>
               </li>

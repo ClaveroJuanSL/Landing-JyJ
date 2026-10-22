@@ -275,6 +275,33 @@ section[id] {
   text-transform: uppercase;
 }
 
+/* Rótulo: palabra chiquita en mayúsculas con un punto verde hoja adelante.
+   Nombra un bloque ("Nuestra misión", "El fundador") sin competir con el
+   texto que sigue. Es la versión discreta de .etiqueta, para usar donde
+   haga falta sin gastar la pastilla. */
+.rotulo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  color: var(--tinta-suave);
+  font-family: var(--fuente-texto);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.rotulo::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--acento);
+}
+
 /* "Doble bisel": ninguna foto ni tarjeta se apoya plana sobre el fondo.
    Hay una bandeja exterior (.bisel: fondo apenas marcado, línea finísima y
    un borde de 6px) y adentro el contenido (.bisel__nucleo) con su propio
@@ -1257,18 +1284,47 @@ section[id] {
    (1:1), así la grilla queda prolija con cualquier cantidad de fotos y sin
    importar si son verticales u horizontales. El cuadrado es el punto medio:
    a una foto horizontal le recorta los costados y a una vertical, arriba y
-   abajo, pero nunca demasiado de ninguna. */
+   abajo, pero nunca demasiado de ninguna.
+   Es flex (no grid) para que, si la última fila queda incompleta, sus
+   fotos se centren en vez de quedar pegadas a la izquierda con un hueco. */
 .galeria {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  --galeria-columnas: 4;
+  --galeria-espacio: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--galeria-espacio);
   margin: clamp(3rem, 6vw, 5rem) 0 0;
   padding: 0;
   list-style: none;
 }
 
+/* Ancho de cada foto: el total menos los espacios entre columnas, dividido
+   por la cantidad de columnas. Con 4 columnas hay 3 espacios. */
+.galeria__item {
+  width: calc(
+    (100% - (var(--galeria-columnas) - 1) * var(--galeria-espacio)) / var(--galeria-columnas)
+  );
+}
+
 .galeria .bisel__nucleo {
   aspect-ratio: 1;
+}
+
+/* "Antes" / "Después": pastilla oscura en la esquina de la foto. */
+.galeria__etiqueta {
+  position: absolute;
+  top: 0.875rem;
+  left: 0.875rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: rgb(10 26 16 / 0.62);
+  color: #f3f7ef;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: inset 0 0 0 1px rgb(247 249 244 / 0.2);
 }
 
 .galeria .bisel__nucleo > img {
@@ -1279,6 +1335,13 @@ section[id] {
   scale: 1.04;
 }
 
+/* Tablet: tres por fila. */
+@media (max-width: 1023px) {
+  .galeria {
+    --galeria-columnas: 3;
+  }
+}
+
 /* Celular: dos por fila, más chicas (igual que Instagram en el teléfono).
    En cuadrados chicos el radio grande se ve pesado: se achica. Hay que
    redefinir también --radio-nucleo, porque su calc() se resolvió en :root
@@ -1287,8 +1350,15 @@ section[id] {
   .galeria {
     --radio: 1.25rem;
     --radio-nucleo: calc(var(--radio) - var(--bisel));
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.625rem;
+    --galeria-columnas: 2;
+    --galeria-espacio: 0.625rem;
+  }
+
+  .galeria__etiqueta {
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.6875rem;
   }
 }
 
@@ -1438,35 +1508,22 @@ section[id] {
   box-shadow: inset 0 1px 0 var(--linea-fuerte);
 }
 
-/* "Misión" / "Visión" en chiquito, con un punto verde hoja adelante: el
-   protagonista es el texto de abajo, no el rótulo. */
-.mision__titulo {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: var(--tinta-suave);
-  font-family: var(--fuente-texto);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.mision__titulo::before {
-  content: "";
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  background: var(--acento);
-}
-
-.mision__texto {
+/* La idea principal, grande. */
+.mision__frase {
   margin-top: 1.5rem;
   font-family: var(--fuente-titulos);
-  font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+  font-size: clamp(1.35rem, 2.1vw, 1.75rem);
   font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: -0.03em;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+/* El desarrollo, en letra de texto y tono suave. */
+.mision__detalle {
+  max-width: 52ch;
+  margin-top: 1.25rem;
+  color: var(--tinta-suave);
+  font-size: 1.0625rem;
 }
 
 @media (max-width: 767px) {
@@ -1477,23 +1534,62 @@ section[id] {
 
 /* --- Sobre mí ------------------------------------------------------------ */
 
+/* align-items: start (y no center) es lo que permite el sticky de la foto:
+   si la columna de la foto se estirara al alto del texto, no tendría
+   espacio para "deslizarse" y se quedaría quieta arriba. */
 .autor {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  align-items: center;
+  align-items: start;
   gap: 2rem;
 }
 
+/* La foto acompaña la lectura: queda fija a 7rem del borde de arriba
+   (debajo del header flotante) hasta que se termina el texto. */
 .autor__foto {
   grid-column: 1 / span 5;
+  position: sticky;
+  top: 7rem;
 }
 
 .autor__foto .bisel__nucleo {
   aspect-ratio: 4 / 5;
 }
 
+/* Dato sobre la foto ("+12 años de trabajo"): una ficha verde bosque en la
+   esquina de abajo, que tapa el saco y no la cara. */
+.autor__dato {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  display: grid;
+  padding: 0.9rem 1.25rem;
+  border-radius: calc(var(--radio-nucleo) - 0.5rem);
+  background: var(--panel);
+  color: var(--panel-tinta);
+  box-shadow: 0 18px 40px -16px rgb(10 26 16 / 0.6);
+}
+
+.autor__dato-numero {
+  font-family: var(--fuente-titulos);
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.autor__dato-texto {
+  margin-top: 0.3rem;
+  color: var(--panel-tinta-suave);
+  font-size: 0.875rem;
+}
+
 .autor__texto {
   grid-column: 7 / -1;
+}
+
+.autor__texto .titulo-seccion {
+  margin-top: 1.25rem;
 }
 
 .autor__parrafos {
@@ -1502,7 +1598,29 @@ section[id] {
   max-width: 52ch;
   margin-top: 1.75rem;
   color: var(--tinta-suave);
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
+}
+
+/* Primer párrafo: la entrada. Más grande y en el color del texto principal,
+   para que sea lo primero que se lea después del título. */
+.autor__parrafos p:first-child {
+  color: var(--tinta);
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+/* Último párrafo: el cierre. Con la letra de los títulos y una línea arriba,
+   como la frase final de una carta. */
+.autor__parrafos p:last-child {
+  margin-top: 0.9rem;
+  padding-top: 1.5rem;
+  box-shadow: inset 0 1px 0 var(--linea-fuerte);
+  color: var(--tinta);
+  font-family: var(--fuente-titulos);
+  font-size: clamp(1.3rem, 2vw, 1.6rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
 }
 
 /* Firma: nombre y rol, debajo de una línea fina. */
@@ -1560,9 +1678,15 @@ section[id] {
     grid-column: 1 / -1;
   }
 
+  /* Sin sticky: con la foto arriba del texto no tiene sentido. */
   .autor__foto {
+    position: static;
     width: 100%;
     max-width: 26rem;
+  }
+
+  .autor__texto {
+    margin-top: 1rem;
   }
 }
 
